@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
+import { API_ENDPOINTS } from "../config/api";
 import "./ChatWindow.scss";
 
 const ChatWindow = () => {
@@ -27,9 +28,7 @@ const ChatWindow = () => {
       if (sessionId) {
         setIsLoadingHistory(true);
         try {
-          const response = await axios.get(
-            `http://localhost:3001/api/history/${sessionId}`
-          );
+          const response = await axios.get(API_ENDPOINTS.HISTORY(sessionId));
           if (response.data.messages.length > 0) {
             setMessages(response.data.messages);
           } else {
@@ -84,7 +83,7 @@ const ChatWindow = () => {
     setIsLoading(true);
 
     try {
-      const response = await axios.post("http://localhost:3001/api/chat", {
+      const response = await axios.post(API_ENDPOINTS.CHAT, {
         query: currentInput,
         sessionId: sessionId, // Send the current session ID
       });
@@ -119,7 +118,7 @@ const ChatWindow = () => {
   const handleReset = async () => {
     if (!sessionId) return;
     try {
-      await axios.post(`http://localhost:3001/api/clear/${sessionId}`);
+      await axios.post(API_ENDPOINTS.CLEAR(sessionId));
       localStorage.removeItem("sessionId");
       setSessionId(null);
       setMessages([
